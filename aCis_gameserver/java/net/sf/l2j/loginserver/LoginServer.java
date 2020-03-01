@@ -16,6 +16,7 @@ import net.sf.l2j.commons.mmocore.SelectorConfig;
 import net.sf.l2j.commons.mmocore.SelectorThread;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.Jhondev;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.loginserver.network.LoginClient;
 import net.sf.l2j.loginserver.network.LoginPacketHandler;
@@ -49,6 +50,7 @@ public class LoginServer
 			LogManager.getLogManager().readConfiguration(is);
 		}
 		
+		Jhondev.infoGS();
 		StringUtil.printSection("aCis");
 		
 		// Initialize config

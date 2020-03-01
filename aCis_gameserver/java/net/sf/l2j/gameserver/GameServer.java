@@ -14,6 +14,7 @@ import net.sf.l2j.commons.mmocore.SelectorThread;
 import net.sf.l2j.commons.util.SysUtil;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.Jhondev;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.data.ItemTable;
@@ -132,6 +133,7 @@ public class GameServer
 			LogManager.getLogManager().readConfiguration(is);
 		}
 		
+		Jhondev.infoGS();
 		StringUtil.printSection("aCis");
 		
 		// Initialize config
