@@ -24,6 +24,10 @@ import net.sf.l2j.gameserver.model.holder.IntIntHolder;
  */
 public final class Config
 {
+	// --------------------------------------------------
+	// SERVER
+	// --------------------------------------------------
+	
 	private static final CLogger LOGGER = new CLogger(Config.class.getName());
 	
 	public static final String CLANS_FILE = "./config/clans.properties";
@@ -35,6 +39,11 @@ public final class Config
 	public static final String PLAYERS_FILE = "./config/players.properties";
 	public static final String SERVER_FILE = "./config/server.properties";
 	public static final String SIEGE_FILE = "./config/siege.properties";
+	
+	// ---------------------------------------------------
+	// CUSTOM
+	// ----------------------------------------------------
+	public static final String CUSTOM_FILE = "./config/Custom/Custom.properties";
 	
 	// --------------------------------------------------
 	// Clans settings
@@ -112,6 +121,13 @@ public final class Config
 	public static long CH_FRONT_FEE_RATIO;
 	public static int CH_FRONT1_FEE;
 	public static int CH_FRONT2_FEE;
+	
+	// --------------------------------------------------
+	// custom settings
+	// --------------------------------------------------
+	public static boolean EXPERTISE_PENALTY;
+	public static boolean WEIGHT_PENALTY;
+
 	
 	// --------------------------------------------------
 	// Events settings
@@ -654,6 +670,16 @@ public final class Config
 		return result;
 	}
 	
+	// -------------------------------------------------------------------
+	// Customs settings
+	// --------------------------------------------------------------------
+	private static final void loadCustom()
+	{
+		final ExProperties Custom = initProperties(CUSTOM_FILE);
+		
+		EXPERTISE_PENALTY = Boolean.parseBoolean(Custom.getProperty("ExpertisePenalty", "true"));
+		WEIGHT_PENALTY = Boolean.valueOf(Custom.getProperty("WeightPenalty", "true"));
+	}	
 	/**
 	 * Loads clan and clan hall settings.
 	 */
@@ -1286,6 +1312,9 @@ public final class Config
 	{
 		LOGGER.info("Loading gameserver configuration files.");
 		
+		// clans settings
+		loadCustom();
+
 		// clans settings
 		loadClans();
 		

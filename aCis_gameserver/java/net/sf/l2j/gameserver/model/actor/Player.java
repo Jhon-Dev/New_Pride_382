@@ -1341,41 +1341,44 @@ public final class Player extends Playable
 	 */
 	public void refreshOverloaded()
 	{
-		int maxLoad = getMaxLoad();
-		if (maxLoad > 0)
+		if (Config.WEIGHT_PENALTY)
 		{
-			int weightproc = getCurrentLoad() * 1000 / maxLoad;
-			int newWeightPenalty;
-			
-			if (weightproc < 500)
-				newWeightPenalty = 0;
-			else if (weightproc < 666)
-				newWeightPenalty = 1;
-			else if (weightproc < 800)
-				newWeightPenalty = 2;
-			else if (weightproc < 1000)
-				newWeightPenalty = 3;
-			else
-				newWeightPenalty = 4;
-			
-			if (_curWeightPenalty != newWeightPenalty)
+			int maxLoad = getMaxLoad();
+			if (maxLoad > 0)
 			{
-				_curWeightPenalty = newWeightPenalty;
+				int weightproc = getCurrentLoad() * 1000 / maxLoad;
+				int newWeightPenalty;
 				
-				if (newWeightPenalty > 0)
-				{
-					addSkill(SkillTable.getInstance().getInfo(4270, newWeightPenalty), false);
-					setIsOverloaded(getCurrentLoad() > maxLoad);
-				}
+				if (weightproc < 500)
+					newWeightPenalty = 0;
+				else if (weightproc < 666)
+					newWeightPenalty = 1;
+				else if (weightproc < 800)
+					newWeightPenalty = 2;
+				else if (weightproc < 1000)
+					newWeightPenalty = 3;
 				else
-				{
-					removeSkill(4270, false);
-					setIsOverloaded(false);
-				}
+					newWeightPenalty = 4;
 				
-				sendPacket(new UserInfo(this));
-				sendPacket(new EtcStatusUpdate(this));
-				broadcastCharInfo();
+				if (_curWeightPenalty != newWeightPenalty)
+				{
+					_curWeightPenalty = newWeightPenalty;
+					
+					if (newWeightPenalty > 0)
+					{
+						addSkill(SkillTable.getInstance().getInfo(4270, newWeightPenalty), false);
+						setIsOverloaded(getCurrentLoad() > maxLoad);
+					}
+					else
+					{
+						removeSkill(4270, false);
+						setIsOverloaded(false);
+					}
+					
+					sendPacket(new UserInfo(this));
+					sendPacket(new EtcStatusUpdate(this));
+					broadcastCharInfo();
+				}
 			}
 		}
 	}
@@ -1385,46 +1388,50 @@ public final class Player extends Playable
 	 */
 	public void refreshExpertisePenalty()
 	{
-		final int expertiseLevel = getSkillLevel(L2Skill.SKILL_EXPERTISE);
-		
-		int armorPenalty = 0;
-		boolean weaponPenalty = false;
-		
-		for (ItemInstance item : getInventory().getPaperdollItems())
+		if (Config.EXPERTISE_PENALTY)
 		{
-			if (item.getItemType() != EtcItemType.ARROW && item.getItem().getCrystalType().getId() > expertiseLevel)
+			
+			final int expertiseLevel = getSkillLevel(L2Skill.SKILL_EXPERTISE);
+			
+			int armorPenalty = 0;
+			boolean weaponPenalty = false;
+			
+			for (ItemInstance item : getInventory().getPaperdollItems())
 			{
-				if (item.isWeapon())
-					weaponPenalty = true;
-				else
-					armorPenalty += (item.getItem().getBodyPart() == Item.SLOT_FULL_ARMOR) ? 2 : 1;
+				if (item.getItemType() != EtcItemType.ARROW && item.getItem().getCrystalType().getId() > expertiseLevel)
+				{
+					if (item.isWeapon())
+						weaponPenalty = true;
+					else
+						armorPenalty += (item.getItem().getBodyPart() == Item.SLOT_FULL_ARMOR) ? 2 : 1;
+				}
 			}
-		}
-		
-		armorPenalty = Math.min(armorPenalty, 4);
-		
-		// Found a different state than previous ; update it.
-		if (_expertiseWeaponPenalty != weaponPenalty || _expertiseArmorPenalty != armorPenalty)
-		{
-			_expertiseWeaponPenalty = weaponPenalty;
-			_expertiseArmorPenalty = armorPenalty;
 			
-			// Passive skill "Grade Penalty" is either granted or dropped.
-			if (_expertiseWeaponPenalty || _expertiseArmorPenalty > 0)
-				addSkill(SkillTable.getInstance().getInfo(4267, 1), false);
-			else
-				removeSkill(4267, false);
+			armorPenalty = Math.min(armorPenalty, 4);
 			
-			sendSkillList();
-			sendPacket(new EtcStatusUpdate(this));
-			
-			final ItemInstance weapon = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-			if (weapon != null)
+			// Found a different state than previous ; update it.
+			if (_expertiseWeaponPenalty != weaponPenalty || _expertiseArmorPenalty != armorPenalty)
 			{
-				if (_expertiseWeaponPenalty)
-					ItemPassiveSkillsListener.getInstance().onUnequip(0, weapon, this);
+				_expertiseWeaponPenalty = weaponPenalty;
+				_expertiseArmorPenalty = armorPenalty;
+				
+				// Passive skill "Grade Penalty" is either granted or dropped.
+				if (_expertiseWeaponPenalty || _expertiseArmorPenalty > 0)
+					addSkill(SkillTable.getInstance().getInfo(4267, 1), false);
 				else
-					ItemPassiveSkillsListener.getInstance().onEquip(0, weapon, this);
+					removeSkill(4267, false);
+				
+				sendSkillList();
+				sendPacket(new EtcStatusUpdate(this));
+				
+				final ItemInstance weapon = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+				if (weapon != null)
+				{
+					if (_expertiseWeaponPenalty)
+						ItemPassiveSkillsListener.getInstance().onUnequip(0, weapon, this);
+					else
+						ItemPassiveSkillsListener.getInstance().onEquip(0, weapon, this);
+				}
 			}
 		}
 	}
