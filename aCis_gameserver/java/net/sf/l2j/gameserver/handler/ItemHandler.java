@@ -9,6 +9,7 @@ import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpiritShot;
 import net.sf.l2j.gameserver.handler.itemhandlers.BlessedSpiritShot;
 import net.sf.l2j.gameserver.handler.itemhandlers.Book;
 import net.sf.l2j.gameserver.handler.itemhandlers.Calculator;
+import net.sf.l2j.gameserver.handler.itemhandlers.ClanItem;
 import net.sf.l2j.gameserver.handler.itemhandlers.Elixir;
 import net.sf.l2j.gameserver.handler.itemhandlers.EnchantScrolls;
 import net.sf.l2j.gameserver.handler.itemhandlers.FishShots;
@@ -63,6 +64,7 @@ public class ItemHandler
 		registerHandler(new SoulCrystals());
 		registerHandler(new SpiritShot());
 		registerHandler(new SummonItems());
+		registerHandler(new ClanItem());
 	}
 	
 	private void registerHandler(IItemHandler handler)
