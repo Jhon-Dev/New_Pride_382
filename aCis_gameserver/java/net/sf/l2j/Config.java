@@ -43,7 +43,7 @@ public final class Config
 	// ---------------------------------------------------
 	// CUSTOM
 	// ----------------------------------------------------
-	public static final String CUSTOM_FILE = "./config/Custom/Custom.properties";
+	public static final String CUSTOM_FILE = "./config/custom/custom.properties";
 	
 	// --------------------------------------------------
 	// Clans settings
