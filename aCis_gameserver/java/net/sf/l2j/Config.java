@@ -127,7 +127,11 @@ public final class Config
 	// --------------------------------------------------
 	public static boolean EXPERTISE_PENALTY;
 	public static boolean WEIGHT_PENALTY;
-
+	
+	// --------------------------------------------------
+	// commands settings
+	// --------------------------------------------------
+	public static boolean MODIFY_ONLINE_PLAYER;
 	
 	// --------------------------------------------------
 	// Events settings
@@ -675,11 +679,19 @@ public final class Config
 	// --------------------------------------------------------------------
 	private static final void loadCustom()
 	{
-		final ExProperties Custom = initProperties(CUSTOM_FILE);
+		final ExProperties custom = initProperties(CUSTOM_FILE);
+		EXPERTISE_PENALTY = Boolean.parseBoolean(custom.getProperty("ExpertisePenalty", "true"));
+		WEIGHT_PENALTY = Boolean.valueOf(custom.getProperty("WeightPenalty", "true"));
 		
-		EXPERTISE_PENALTY = Boolean.parseBoolean(Custom.getProperty("ExpertisePenalty", "true"));
-		WEIGHT_PENALTY = Boolean.valueOf(Custom.getProperty("WeightPenalty", "true"));
-	}	
+		
+	// -------------------------------------------------------------------
+	// Customs settings
+	// --------------------------------------------------------------------
+
+		final ExProperties commands = initProperties(CUSTOM_FILE);
+		MODIFY_ONLINE_PLAYER = Boolean.parseBoolean(commands.getProperty("OnlinePlayer", "False"));
+	}
+	
 	/**
 	 * Loads clan and clan hall settings.
 	 */
@@ -1314,7 +1326,7 @@ public final class Config
 		
 		// clans settings
 		loadCustom();
-
+		
 		// clans settings
 		loadClans();
 		
