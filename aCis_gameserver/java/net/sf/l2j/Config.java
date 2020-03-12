@@ -48,6 +48,7 @@ public final class Config
 	public static final String CUSTOM_FILE = "./config/custom/custom.properties";
 	public static final String COMMANDS = "./config/custom/mods/commands.properties";
 	public static final String ENCHANT_CUSTOM = "./config/custom/mods/enchant.properties";
+	public static final String EFFECTS = "./config/custom/mods/ShotsAndEffect.properties";
 	
 	// --------------------------------------------------
 	// Clans settings
@@ -141,6 +142,12 @@ public final class Config
 	public static boolean ENABLE_SHOT_MSG;
 	public static boolean CONSUME_ARROW;
 	public static boolean ENABLE_SHOOT_ARROW_MSG;
+	
+	/** Effects Armor */
+	public static boolean ARMOR_EFFECT;
+	public static int ENCHANT_EFFECT_1;
+	public static int ENCHANT_EFFECT_2;
+	public static int ENCHANT_EFFECT_3;
 	
 	// --------------------------------------------------
 	// commands settings
@@ -817,20 +824,31 @@ public final class Config
 	// --------------------------------------------------------------------
 	private static final void loadCustom()
 	{
+		/**
+		 * Customs
+		 */
 		final ExProperties custom = initProperties(CUSTOM_FILE);
 		EXPERTISE_PENALTY = Boolean.parseBoolean(custom.getProperty("ExpertisePenalty", "true"));
 		WEIGHT_PENALTY = Boolean.valueOf(custom.getProperty("WeightPenalty", "true"));
-		FORCE_INVENTORY_UPDATE = Boolean.valueOf(custom.getProperty("ForceInventoryUpdate", "False"));
-		ENABLE_AUTOMATIC_SHOT = Boolean.valueOf(custom.getProperty("EnableAutomaticShots", "False"));
-		ENABLE_SHOT_GLOW = Boolean.valueOf(custom.getProperty("EnableShotsGlow", "False"));
-		ENABLE_SHOT_MSG = Boolean.valueOf(custom.getProperty("EnableShotsMsg", "False"));
-		CONSUME_ARROW = Boolean.valueOf(custom.getProperty("ConsumeArrow", "False"));
-		ENABLE_SHOOT_ARROW_MSG = Boolean.valueOf(custom.getProperty("EnableShootArrowMsg", "False"));
-
-		// -------------------------------------------------------------------
-		// Customs settings
-		// --------------------------------------------------------------------
 		
+		/**
+		 * Soushots e Efeitos
+		 */
+		final ExProperties Effect = initProperties(EFFECTS);
+		ARMOR_EFFECT = Boolean.parseBoolean(Effect.getProperty("ArmorEffect", "False"));
+		ENCHANT_EFFECT_1 = Effect.getProperty("EnchantEffect1", 16);
+		ENCHANT_EFFECT_2 = Effect.getProperty("EnchantEffect2", 18);
+		ENCHANT_EFFECT_3 = Effect.getProperty("EnchantEffect3", 35);
+		FORCE_INVENTORY_UPDATE = Boolean.valueOf(Effect.getProperty("ForceInventoryUpdate", "False"));
+		ENABLE_AUTOMATIC_SHOT = Boolean.valueOf(Effect.getProperty("EnableAutomaticShots", "True"));
+		ENABLE_SHOT_GLOW = Boolean.valueOf(Effect.getProperty("EnableShotsGlow", "True"));
+		ENABLE_SHOT_MSG = Boolean.valueOf(Effect.getProperty("EnableShotsMsg", "False"));
+		CONSUME_ARROW = Boolean.valueOf(Effect.getProperty("ConsumeArrow", "False"));
+		ENABLE_SHOOT_ARROW_MSG = Boolean.valueOf(Effect.getProperty("EnableShootArrowMsg", "False"));
+
+		/**
+		 * Comandos.
+		 */
 		final ExProperties commands = initProperties(COMMANDS);
 		MODIFY_ONLINE_PLAYER = Boolean.parseBoolean(commands.getProperty("OnlinePlayer", "False"));
 	}
