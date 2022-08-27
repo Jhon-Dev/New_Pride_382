@@ -81,7 +81,13 @@ public class Npc extends Creature
 	
 	private double _currentCollisionHeight; // used for npc grow effect skills
 	private double _currentCollisionRadius; // used for npc grow effect skills
-	
+	public boolean _soulshotcharged = false;
+	public boolean _spiritshotcharged = false;
+	private int _soulshotamount = 0;
+	private int _spiritshotamount = 0;
+	public boolean _ssrecharged = true;
+	public boolean _spsrecharged = true;
+
 	private int _currentSsCount = 0;
 	private int _currentSpsCount = 0;
 	private int _shotsMask = 0;
@@ -163,7 +169,33 @@ public class Npc extends Creature
 	{
 		return getTemplate().getRace() == Race.UNDEAD;
 	}
-	
+
+	public boolean useSoulShot() {
+		if (this._soulshotcharged) {
+			return true;
+		}
+		if (this._ssrecharged) {
+			this._ssrecharged = false;
+		}
+		else if (this._soulshotamount <= 0) {
+			return false;
+		}
+		return this._soulshotcharged;
+	}
+
+	public boolean useSpiritShot() {
+		if (this._spiritshotcharged) {
+			return true;
+		}
+		if (this._spsrecharged) {
+			this._spsrecharged = false;
+		}
+		else if (this._spiritshotamount <= 0) {
+			return false;
+		}
+		return this._spiritshotcharged;
+	}
+
 	@Override
 	public void updateAbnormalEffect()
 	{
@@ -338,7 +370,7 @@ public class Npc extends Creature
 				return;
 			
 			_currentSsCount--;
-			broadcastPacketInRadius(new MagicSkillUse(this, this, 2154, 1, 0, 0), 600);
+			broadcastPacketInRadius(new MagicSkillUse(this, this, 2039, 1, 0, 0), 360000);
 			setChargedShot(ShotType.SOULSHOT, true);
 		}
 		
@@ -351,7 +383,7 @@ public class Npc extends Creature
 				return;
 			
 			_currentSpsCount--;
-			broadcastPacketInRadius(new MagicSkillUse(this, this, 2061, 1, 0, 0), 600);
+			broadcastPacketInRadius(new MagicSkillUse(this, this, 2061, 1, 0, 0), 360000);
 			setChargedShot(ShotType.SPIRITSHOT, true);
 		}
 	}

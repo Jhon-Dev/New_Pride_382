@@ -114,7 +114,15 @@ public final class ItemInstance extends WorldObject implements Runnable, Compara
 	/** Custom item types (used loto, race tickets) */
 	private int _type1;
 	private int _type2;
-	
+
+	public static final int CHARGED_NONE = 0;
+	public static final int CHARGED_SOULSHOT = 1;
+	public static final int CHARGED_SPIRITSHOT = 1;
+	public static final int CHARGED_BLESSED_SPIRITSHOT = 2;
+
+	private int _chargedSoulshot;
+	private int _chargedSpiritshot;
+	private boolean _chargedFishshot;
 	private boolean _destroyProtected;
 	
 	private ItemState _lastChange = ItemState.MODIFIED;
@@ -809,7 +817,49 @@ public final class ItemInstance extends WorldObject implements Runnable, Compara
 	{
 		return false;
 	}
-	
+	public int getChargedSpiritshot()
+	{
+		return _chargedSpiritshot;
+	}
+
+	public boolean getChargedFishshot()
+	{
+		return _chargedFishshot;
+	}
+
+	/**
+	 * Returns the type of charge with SoulShot of the item.
+	 * @return int (CHARGED_NONE, CHARGED_SOULSHOT)
+	 */
+	public int getChargedSoulshot()
+	{
+		return _chargedSoulshot;
+	}
+
+	/**
+	 * Sets the type of charge with SoulShot of the item
+	 * @param type : int (CHARGED_NONE, CHARGED_SOULSHOT)
+	 */
+	public void setChargedSoulshot(int type)
+	{
+		_chargedSoulshot = type;
+	}
+
+	/**
+	 * Sets the type of charge with SpiritShot of the item
+	 * @param type : int (CHARGED_NONE, CHARGED_SPIRITSHOT, CHARGED_BLESSED_SPIRITSHOT)
+	 */
+	public void setChargedSpiritshot(int type)
+	{
+		_chargedSpiritshot = type;
+	}
+
+	public void setChargedFishshot(boolean type)
+	{
+		_chargedFishshot = type;
+	}
+
+
 	/**
 	 * This function basically returns a set of functions from L2Item/L2Armor/Weapon, but may add additional functions, if this particular item instance is enhanched for a particular player.
 	 * @param player : Creature designating the player
@@ -1211,7 +1261,61 @@ public final class ItemInstance extends WorldObject implements Runnable, Compara
 	{
 		return getItem().isQuestItem();
 	}
-	
+	public boolean isCursedWeapon()
+	{
+		return getItem().isCursedWeapon();
+	}
+
+	public boolean isItemList1()
+	{
+		return getItem().isItemList1();
+	}
+
+	public int enchantBonusItemList1()
+	{
+		return getItem().enchantBonusItemList1();
+	}
+
+	public boolean isItemList2()
+	{
+		return getItem().isItemList2();
+	}
+
+	public int enchantBonusItemList2()
+	{
+		return getItem().enchantBonusItemList2();
+	}
+
+	public boolean isItemList3()
+	{
+		return getItem().isItemList3();
+	}
+
+	public int enchantBonusItemList3()
+	{
+		return getItem().enchantBonusItemList3();
+	}
+
+	public boolean isItemList4()
+	{
+		return getItem().isItemList4();
+	}
+
+	public int enchantBonusItemList4()
+	{
+		return getItem().enchantBonusItemList4();
+	}
+
+	public boolean isItemList5()
+	{
+		return getItem().isItemList5();
+	}
+
+	public int enchantBonusItemList5()
+	{
+		return getItem().enchantBonusItemList5();
+	}
+
 	@Override
 	public void decayMe()
 	{

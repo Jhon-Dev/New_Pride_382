@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.enums.GaugeColor;
 import net.sf.l2j.gameserver.enums.IntentionType;
 import net.sf.l2j.gameserver.enums.ScriptEventType;
 import net.sf.l2j.gameserver.enums.ZoneId;
+import net.sf.l2j.gameserver.enums.items.CrystalType;
 import net.sf.l2j.gameserver.enums.items.ShotType;
 import net.sf.l2j.gameserver.enums.items.WeaponType;
 import net.sf.l2j.gameserver.enums.skills.AbnormalEffect;
@@ -134,13 +135,13 @@ public abstract class Creature extends WorldObject
 	private boolean _champion = false;
 	
 	private final Calculator[] _calculators;
-	
+
 	private ChanceSkillList _chanceSkills;
 	protected FusionSkill _fusionSkill;
 	
 	private final byte[] _zones = new byte[ZoneId.VALUES.length];
 	protected byte _zoneValidateCounter = 4;
-	
+
 	public Creature(int objectId, CreatureTemplate template)
 	{
 		super(objectId);
@@ -543,6 +544,9 @@ public abstract class Creature extends WorldObject
 		}
 		
 		stopEffectsOnAction();
+
+		// Get the active weapon instance (always equipped in the right hand)
+		ItemInstance weaponInst = getActiveWeaponInstance();
 		
 		// Get the active weapon item corresponding to the active weapon instance (always equipped in the right hand)
 		final Weapon weaponItem = getActiveWeaponItem();
@@ -610,21 +614,63 @@ public abstract class Creature extends WorldObject
 					return;
 			}
 		}
-		
-		// Recharge any active auto soulshot tasks for current Creature instance.
-		rechargeShots(true, false);
-		
+
+
+		// Recharge any active auto soulshot tasks for player (or player's summon if one exists).
+		if (this instanceof Player)
+			((Player) this).rechargeAutoSoulShot(true, false, false);
+		else if (this instanceof Summon)
+			((Summon) this).getOwner().rechargeAutoSoulShot(true, false, true);
+
+		// Verify if soulshots are charged.
+		boolean wasSSCharged;
+
+		if (this instanceof Summon && !(this instanceof Pet && weaponInst != null))
+			wasSSCharged = (((Summon) this).getChargedSoulShot() != ItemInstance.CHARGED_NONE);
+		else
+			wasSSCharged = (weaponInst != null && weaponInst.getChargedSoulshot() != ItemInstance.CHARGED_NONE);
+
+		if (this instanceof Attackable)
+		{
+			if (((Npc) this).useSoulShot())
+				wasSSCharged = true;
+		}
+
 		// Get the Attack Speed of the Creature (delay (in milliseconds) before next attack)
 		int timeAtk = calculateTimeBetweenAttacks(target, weaponItemType);
+		int timeToHit = timeAtk / 2;
 		_attackEndTime = time + timeAtk - 100;
 		_disableBowAttackEndTime = time + 50;
-		
-		// Create Attack
-		Attack attack = new Attack(this, isChargedShot(ShotType.SOULSHOT), (weaponItem != null) ? weaponItem.getCrystalType().getId() : 0);
-		
+
+		int ssGrade = 0;
+
+		if (weaponItem != null)
+		{
+			if (this instanceof Player)
+			{
+				if (weaponInst.isItemList1() && weaponInst.getEnchantLevel() >= 19)
+					ssGrade = CrystalType.C.getId();
+				else if (weaponInst.isItemList2() && weaponInst.getEnchantLevel() >= 16)
+					ssGrade = CrystalType.D.getId();
+				else if (weaponInst.isItemList3() && weaponInst.getEnchantLevel() >= 13)
+					ssGrade = CrystalType.B.getId();
+				else
+					ssGrade = CrystalType.S.getId();
+			}
+			else
+				ssGrade = CrystalType.S.getId();
+		}
+
+		// Create a Server->Client packet Attack
+		Attack attack = new Attack(this, wasSSCharged, ssGrade);
+
+		// Set the Attacking Body part to CHEST
+		setAttackingBodypart();
 		// Make sure that char is facing selected target
 		getPosition().setHeading(MathUtil.calculateHeadingFrom(this, target));
-		
+
+//		// Get the Attack Reuse Delay of the L2Weapon
+		int reuse = calculateReuseTime(target, weaponItem);
 		boolean hitted;
 		
 		// Select the type of attack to start
@@ -2633,6 +2679,7 @@ public abstract class Creature extends WorldObject
 	
 	// set by the start of attack, in game ticks
 	private long _attackEndTime;
+	private int _attacking;
 	private long _disableBowAttackEndTime;
 	private long _castInterruptTime;
 	
@@ -3590,7 +3637,16 @@ public abstract class Creature extends WorldObject
 		
 		return (dx * dx + dy * dy) <= radius * radius;
 	}
-	
+
+	/**
+	 * Set _attacking corresponding to Attacking Body part to CHEST.<BR>
+	 * <BR>
+	 */
+	public void setAttackingBodypart()
+	{
+		_attacking = Inventory.PAPERDOLL_CHEST;
+	}
+
 	/**
 	 * @return True if arrows are available.
 	 */
@@ -3747,7 +3803,9 @@ public abstract class Creature extends WorldObject
 			{
 				// Absorb HP from the damage inflicted
 				double absorbPercent = getStat().calcStat(Stats.ABSORB_DAMAGE_PERCENT, 0, null, null);
-				
+				// Absorb CP from the damage inflicted
+				double absorbCpPercent = getStat().calcStat(Stats.ABSORB_CP_DAMAGE_PERCENT, 0, null, null);
+
 				if (absorbPercent > 0)
 				{
 					int maxCanAbsorb = (int) (getMaxHp() - getCurrentHp());
@@ -3758,6 +3816,18 @@ public abstract class Creature extends WorldObject
 						
 					if (absorbDamage > 0)
 						setCurrentHp(getCurrentHp() + absorbDamage);
+				}
+
+				if (absorbCpPercent > 0)
+				{
+					int maxCanAbsorb = (int) (getMaxCp() - getCurrentCp());
+					int absorbDamage = (int) (absorbCpPercent / 100. * damage);
+
+					if (absorbDamage > maxCanAbsorb)
+						absorbDamage = maxCanAbsorb; // Can't absord more than max cp
+
+					if (absorbDamage > 0)
+						setCurrentCp(getCurrentCp() + absorbDamage);
 				}
 			}
 			
@@ -3969,7 +4039,28 @@ public abstract class Creature extends WorldObject
 				return Formulas.calcPAtkSpd(this, target, getStat().getPAtkSpd());
 		}
 	}
-	
+
+	public int calculateReuseTime(Creature target,Weapon weapon)
+	{
+		if (weapon == null)
+			return 0;
+
+		// only bows should continue for now
+		int reuse = weapon.getReuseDelay();
+		if (reuse == 0)
+			return 0;
+
+		reuse *= getStat().getWeaponReuseModifier(target);
+		double atkSpd = getStat().getPAtkSpd();
+		switch (weapon.getItemType())
+		{
+			case BOW:
+				return (int) (reuse * 345 / atkSpd);
+			default:
+				return (int) (reuse * 312 / atkSpd);
+		}
+	}
+
 	public ChanceSkillList getChanceSkills()
 	{
 		return _chanceSkills;

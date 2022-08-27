@@ -18,6 +18,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import net.sf.l2j.commons.concurrent.ThreadPool;
@@ -248,6 +250,8 @@ import net.sf.l2j.gameserver.taskmanager.WaterTaskManager;
  */
 public final class Player extends Playable
 {
+	public static final Logger _log = Logger.getLogger(Player.class.getName());
+
 	private static final String RESTORE_SKILLS_FOR_CHAR = "SELECT skill_id,skill_level FROM character_skills WHERE char_obj_id=? AND class_index=?";
 	private static final String ADD_OR_UPDATE_SKILL = "INSERT INTO character_skills (char_obj_id,skill_id,skill_level,class_index) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE skill_level=VALUES(skill_level)";
 	private static final String DELETE_SKILL_FROM_CHAR = "DELETE FROM character_skills WHERE skill_id=? AND char_obj_id=? AND class_index=?";
@@ -286,7 +290,11 @@ public final class Player extends Playable
 	
 	private GameClient _client;
 	private final Map<Integer, String> _chars = new HashMap<>();
-	
+
+	/** The current higher Expertise of the L2PcInstance (None=0, D=1, C=2, B=3, A=4, S=5) */
+	private int _expertiseIndex; // index in EXPERTISE_LEVELS
+
+	private int _expertisePenalty = 0;
 	private String _accountName;
 	private long _deleteTimer;
 	
@@ -439,6 +447,9 @@ public final class Player extends Playable
 	
 	private long _recentFakeDeathEndTime;
 	private boolean _isFakeDeath;
+
+	/** The fists L2Weapon of the L2PcInstance (used when no weapon is equipped) */
+	private Weapon _fistsWeaponItem;
 	
 	private int _expertiseArmorPenalty;
 	private boolean _expertiseWeaponPenalty;
@@ -450,6 +461,8 @@ public final class Player extends Playable
 	protected Map<Integer, Cubic> _cubics = new ConcurrentSkipListMap<>();
 	
 	protected Set<Integer> _activeSoulShots = ConcurrentHashMap.newKeySet(1);
+
+	public final ReentrantLock soulShotLock = new ReentrantLock();
 	
 	private final int _loto[] = new int[5];
 	private final int _race[] = new int[2];
@@ -1330,7 +1343,11 @@ public final class Player extends Playable
 	{
 		return _expertiseWeaponPenalty;
 	}
-	
+
+	public int getExpertisePenalty()
+	{
+		return _expertisePenalty;
+	}
 	public int getWeightPenalty()
 	{
 		return _curWeightPenalty;
@@ -1594,7 +1611,89 @@ public final class Player extends Playable
 	{
 		return _activeEnchantItem;
 	}
-	
+
+	/**
+	 * Set the fists weapon of the L2PcInstance (used when no weapon is equipped).
+	 * @param weaponItem The fists L2Weapon to set to the L2PcInstance
+	 */
+	public void setFistsWeaponItem(Weapon weaponItem)
+	{
+		_fistsWeaponItem = weaponItem;
+	}
+
+	/**
+	 * @return The fists weapon of the L2PcInstance (used when no weapon is equipped).
+	 */
+	public Weapon getFistsWeaponItem()
+	{
+		return _fistsWeaponItem;
+	}
+
+	/**
+	 * @param classId The classId to test.
+	 * @return The fists weapon of the L2PcInstance Class (used when no weapon is equipped).
+	 */
+	public Weapon findFistsWeaponItem(int classId)
+	{
+		Weapon weaponItem = null;
+		if ((classId >= 0x00) && (classId <= 0x09))
+		{
+			// human fighter fists
+			Item temp = ItemTable.getInstance().getTemplate(246);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x0a) && (classId <= 0x11))
+		{
+			// human mage fists
+			Item temp = ItemTable.getInstance().getTemplate(251);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x12) && (classId <= 0x18))
+		{
+			// elven fighter fists
+			Item temp = ItemTable.getInstance().getTemplate(244);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x19) && (classId <= 0x1e))
+		{
+			// elven mage fists
+			Item temp = ItemTable.getInstance().getTemplate(249);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x1f) && (classId <= 0x25))
+		{
+			// dark elven fighter fists
+			Item temp = ItemTable.getInstance().getTemplate(245);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x26) && (classId <= 0x2b))
+		{
+			// dark elven mage fists
+			Item temp = ItemTable.getInstance().getTemplate(250);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x2c) && (classId <= 0x30))
+		{
+			// orc fighter fists
+			Item temp = ItemTable.getInstance().getTemplate(248);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x31) && (classId <= 0x34))
+		{
+			// orc mage fists
+			Item temp = ItemTable.getInstance().getTemplate(252);
+			weaponItem = (Weapon) temp;
+		}
+		else if ((classId >= 0x35) && (classId <= 0x39))
+		{
+			// dwarven fists
+			Item temp = ItemTable.getInstance().getTemplate(247);
+			weaponItem = (Weapon) temp;
+		}
+
+		return weaponItem;
+	}
+
 	/**
 	 * @return The Race object of the Player.
 	 */
@@ -3379,8 +3478,12 @@ public final class Player extends Playable
 	@Override
 	public Weapon getActiveWeaponItem()
 	{
-		final ItemInstance weapon = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-		return (weapon == null) ? getTemplate().getFists() : (Weapon) weapon.getItem();
+		ItemInstance weapon = getActiveWeaponInstance();
+
+		if (weapon == null)
+			return getFistsWeaponItem();
+
+		return (Weapon) weapon.getItem();
 	}
 	
 	/**
@@ -6853,7 +6956,7 @@ public final class Player extends Playable
 	{
 		return _currentFolk;
 	}
-	
+
 	/**
 	 * @return True if Player is a participant in the Festival of Darkness.
 	 */
@@ -6876,14 +6979,227 @@ public final class Player extends Playable
 	{
 		return _activeSoulShots;
 	}
-	
-	@Override
-	public boolean isChargedShot(ShotType type)
+	public void rechargeAutoSoulShot(boolean physical, boolean magic, boolean summon)
 	{
-		ItemInstance weapon = getActiveWeaponInstance();
-		return weapon != null && weapon.isChargedShot(type);
+		ItemInstance weaponInst = getActiveWeaponInstance();
+		if (weaponInst == null || weaponInst.isCursedWeapon())
+			return;
+
+		AutoSoulShot(physical, magic, summon);
 	}
-	
+
+	public void AutoSoulShot(boolean physical, boolean magic, boolean summon)
+
+	{
+		if (Config.ENABLE_AUTOMATIC_SHOT)
+		{
+			if (magic)
+			{
+				if (!summon)
+				{
+					ItemInstance weaponInst = getActiveWeaponInstance();
+
+					// SpiritShots are already active.
+					if (weaponInst.getChargedSpiritshot() != ItemInstance.CHARGED_NONE)
+						return;
+
+					// Charge Blessed SpiritShot
+					weaponInst.setChargedSpiritshot(ItemInstance.CHARGED_BLESSED_SPIRITSHOT);
+
+					// Char uses the power of spirit.
+					if (Config.ENABLE_SHOT_MSG)
+						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENABLED_SPIRITSHOT));
+
+					// Show shot effect
+					if (Config.ENABLE_SHOT_GLOW)
+					{
+						if (weaponInst.isItemList1() && weaponInst.getEnchantLevel() >= 18)
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2161, 1, 0, 0), 360000);
+						else if (weaponInst.isItemList2() && weaponInst.getEnchantLevel() >= 16)
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2160, 1, 0, 0), 360000);
+						else if (weaponInst.isItemList3() && weaponInst.getEnchantLevel() >= 13)
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2162, 1, 0, 0), 360000);
+						else
+							broadcastPacketInRadius( new MagicSkillUse(this, this, 2164, 1, 0, 0), 360000);
+					}
+				}
+				else
+				{
+					Player activeOwner = this;
+					Summon activePet = activeOwner.getSummon();
+					ItemInstance weaponInst = activePet.getActiveWeaponInstance();
+
+					if (weaponInst == null)
+					{
+						if (activePet.getChargedSpiritShot() != ItemInstance.CHARGED_NONE)
+							return;
+						activePet.setChargedSpiritShot(ItemInstance.CHARGED_BLESSED_SPIRITSHOT);
+					}
+					else
+					{
+						if (weaponInst.getChargedSpiritshot() != ItemInstance.CHARGED_NONE)
+							return;
+						weaponInst.setChargedSpiritshot(ItemInstance.CHARGED_BLESSED_SPIRITSHOT);
+					}
+
+					// Pet uses the power of spirit.
+					if (Config.ENABLE_SHOT_MSG)
+						activeOwner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENABLED_SPIRITSHOT));
+				}
+			}
+			if (physical)
+			{
+				if (!summon)
+				{
+					ItemInstance weaponInst = this.getActiveWeaponInstance();
+
+					// SoulShots are already active.
+					if (weaponInst.getChargedSoulshot() != ItemInstance.CHARGED_NONE)
+						return;
+
+					// Charge soul shot
+					weaponInst.setChargedSoulshot(ItemInstance.CHARGED_SOULSHOT);
+
+					// Char uses the power of spirit.
+					if (Config.ENABLE_SHOT_MSG)
+						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENABLED_SOULSHOT));
+
+					// Show shot effect
+					if (Config.ENABLE_SHOT_GLOW)
+					{
+						if (weaponInst.isItemList1() && weaponInst.getEnchantLevel() >= 18)
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2151, 1, 0, 0), 360000);
+						else if (weaponInst.isItemList2() && weaponInst.getEnchantLevel() >= 16)
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2150, 1, 0, 0), 360000);
+						else if (weaponInst.isItemList3() && weaponInst.getEnchantLevel() >= 13)
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2152, 1, 0, 0), 360000);
+						else
+							broadcastPacketInRadius(new MagicSkillUse(this, this, 2154, 1, 0, 0), 360000);
+					}
+				}
+				else
+				{
+					Player activeOwner = this;
+					Summon activePet = activeOwner.getSummon();
+					ItemInstance weaponInst = activePet.getActiveWeaponInstance();
+
+					if (weaponInst == null)
+					{
+						if (activePet.getChargedSoulShot() != ItemInstance.CHARGED_NONE)
+							return;
+						activePet.setChargedSoulShot(ItemInstance.CHARGED_SOULSHOT);
+					}
+					else
+					{
+						if (weaponInst.getChargedSoulshot() != ItemInstance.CHARGED_NONE)
+							return;
+						weaponInst.setChargedSoulshot(ItemInstance.CHARGED_SOULSHOT);
+					}
+
+					// Pet uses the power of spirit.
+					if (Config.ENABLE_SHOT_MSG)
+						activeOwner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENABLED_SPIRITSHOT));
+				}
+			}
+		}
+		else
+		{
+			ItemInstance item;
+			IItemHandler handler;
+
+			if (_activeSoulShots == null || _activeSoulShots.isEmpty())
+				return;
+
+			try
+			{
+				for (int itemId : _activeSoulShots)
+				{
+					item = getInventory().getItemByItemId(itemId);
+
+					if (item != null)
+					{
+						if (magic)
+						{
+							if (!summon)
+							{
+								switch (itemId)
+								{
+									case 2509:
+									case 2510:
+									case 2511:
+									case 2512:
+									case 2513:
+									case 2514:
+									case 3947:
+									case 3948:
+									case 3949:
+									case 3950:
+									case 3951:
+									case 3952:
+									case 5790:
+										handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+										if (handler != null)
+											handler.useItem(this, item, false);
+										break;
+								}
+							}
+							else
+							{
+								switch (itemId)
+								{
+									case 6646:
+									case 6647:
+										handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+										if (handler != null)
+											handler.useItem(this, item, false);
+										break;
+								}
+							}
+						}
+
+						if (physical)
+						{
+							if (!summon)
+							{
+								switch (itemId)
+								{
+									case 1463:
+									case 1464:
+									case 1465:
+									case 1466:
+									case 1467:
+									case 1835:
+									case 5789:
+										handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+										if (handler != null)
+											handler.useItem(this, item, false);
+
+										break;
+								}
+							}
+							else
+							{
+								if (itemId == 6645)
+								{
+									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+									if (handler != null)
+										handler.useItem(this, item, false);
+								}
+							}
+						}
+					}
+					else
+						removeAutoSoulShot(itemId);
+				}
+			}
+			catch (NullPointerException npe)
+			{
+				_log.log(Level.WARNING, toString(), npe);
+			}
+		}
+	}
+
+
 	@Override
 	public void setChargedShot(ShotType type, boolean charged)
 	{
@@ -7915,7 +8231,21 @@ public final class Player extends Playable
 			setSpawnProtection(false);
 		}
 	}
-	
+	/**
+	 * @param expertiseIndex The expertiseIndex to set.
+	 */
+	public void setExpertiseIndex(int expertiseIndex)
+	{
+		_expertiseIndex = expertiseIndex;
+	}
+
+	/**
+	 * @return Returns the expertiseIndex.
+	 */
+	public int getExpertiseIndex()
+	{
+		return _expertiseIndex;
+	}
 	@Override
 	public final void onTeleported()
 	{

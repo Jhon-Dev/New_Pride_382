@@ -41,14 +41,19 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			// checking scroll type and configured maximum enchant level
 			switch (enchantItem.getItem().getType2())
 			{
+				// weapon scrolls can enchant only weapons
 				case Item.TYPE2_WEAPON:
 					if (!_isWeapon || (Config.ENCHANT_MAX_WEAPON > 0 && enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_WEAPON))
 						return false;
 					break;
 				
 				case Item.TYPE2_SHIELD_ARMOR:
-				case Item.TYPE2_ACCESSORY:
 					if (_isWeapon || (Config.ENCHANT_MAX_ARMOR > 0 && enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_ARMOR))
+						return false;
+					break;
+
+				case Item.TYPE2_ACCESSORY:
+					if (_isWeapon || (Config.ENCHANT_MAX_JEWELRY > 0 && enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_JEWELRY))
 						return false;
 					break;
 				
@@ -102,22 +107,257 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			
 			boolean fullBody = enchantItem.getItem().getBodyPart() == Item.SLOT_FULL_ARMOR;
 			if (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || (fullBody && enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL))
-				return 1;
-			
+				return 100;
+
+			boolean isAccessory = enchantItem.getItem().getType2() == Item.TYPE2_ACCESSORY;
 			double chance = 0;
-			
-			// Armor formula : 0.66^(current-2), chance is lower and lower for each enchant.
-			if (enchantItem.isArmor())
-				chance = Math.pow(Config.ENCHANT_CHANCE_ARMOR, (enchantItem.getEnchantLevel() - 2));
-			// Weapon formula is 70% for fighter weapon, 40% for mage weapon. Special rates after +14.
-			else if (enchantItem.isWeapon())
+
+			if (enchantItem.isItemList1())
 			{
-				if (((Weapon) enchantItem.getItem()).isMagical())
-					chance = (enchantItem.getEnchantLevel() > 14) ? Config.ENCHANT_CHANCE_WEAPON_MAGIC_15PLUS : Config.ENCHANT_CHANCE_WEAPON_MAGIC;
+				if (_isBlessed)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_1 && Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON_1.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_1 && Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_1.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_1 && Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR_1.get(enchantItem.getEnchantLevel());
+					}
+				}
+				else if (_isCrystal)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_1 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_1.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_1 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_1.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_1 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_1.get(enchantItem.getEnchantLevel());
+					}
+				}
 				else
-					chance = (enchantItem.getEnchantLevel() > 14) ? Config.ENCHANT_CHANCE_WEAPON_NONMAGIC_15PLUS : Config.ENCHANT_CHANCE_WEAPON_NONMAGIC;
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_1 && Config.ENCHANT_CHANCE_LIST_WEAPON_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_WEAPON_1.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_1 && Config.ENCHANT_CHANCE_LIST_JEWELRY_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_JEWELRY_1.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_1 && Config.ENCHANT_CHANCE_LIST_ARMOR_1.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_ARMOR_1.get(enchantItem.getEnchantLevel());
+					}
+				}
 			}
-			
+			else if (enchantItem.isItemList2())
+			{
+				if (_isBlessed)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_2 && Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON_2.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_2 && Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_2.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_2 && Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR_2.get(enchantItem.getEnchantLevel());
+					}
+				}
+				else if (_isCrystal)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_2 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_2.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_2 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_2.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_2 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_2.get(enchantItem.getEnchantLevel());
+					}
+				}
+				else
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_2 && Config.ENCHANT_CHANCE_LIST_WEAPON_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_WEAPON_2.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_2 && Config.ENCHANT_CHANCE_LIST_JEWELRY_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_JEWELRY_2.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_2 && Config.ENCHANT_CHANCE_LIST_ARMOR_2.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_ARMOR_2.get(enchantItem.getEnchantLevel());
+					}
+				}
+			}
+			else if (enchantItem.isItemList3())
+			{
+				if (_isBlessed)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_3 && Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON_3.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_3 && Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_3.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_3 && Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR_3.get(enchantItem.getEnchantLevel());
+					}
+				}
+				else if (_isCrystal)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_3 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_3.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_3 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_3.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_3 && Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_3.get(enchantItem.getEnchantLevel());
+					}
+				}
+				else
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_3 && Config.ENCHANT_CHANCE_LIST_WEAPON_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_WEAPON_3.get(enchantItem.getEnchantLevel());
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_3 && Config.ENCHANT_CHANCE_LIST_JEWELRY_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_JEWELRY_3.get(enchantItem.getEnchantLevel());
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_3 && Config.ENCHANT_CHANCE_LIST_ARMOR_3.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_ARMOR_3.get(enchantItem.getEnchantLevel());
+					}
+				}
+			}
+			else
+			{
+				if (_isBlessed)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON && Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_WEAPON.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.BLESSED_ENCHANT_CHANCE_WEAPON;
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY && Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_JEWELRY.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.BLESSED_ENCHANT_CHANCE_JEWELRY;
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR && Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.BLESSED_ENCHANT_CHANCE_LIST_ARMOR.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.BLESSED_ENCHANT_CHANCE_ARMOR;
+					}
+				}
+				else if (_isCrystal)
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON && Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_WEAPON;
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY && Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_JEWELRY;
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR && Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.CRYSTAL_ENCHANT_CHANCE_ARMOR;
+					}
+				}
+				else
+				{
+					if (_isWeapon)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON && Config.ENCHANT_CHANCE_LIST_WEAPON.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_WEAPON.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.ENCHANT_CHANCE_WEAPON;
+					}
+					else if (isAccessory)
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY && Config.ENCHANT_CHANCE_LIST_JEWELRY.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_JEWELRY.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.ENCHANT_CHANCE_JEWELRY;
+					}
+					else
+					{
+						if(Config.ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR && Config.ENCHANT_CHANCE_LIST_ARMOR.containsKey(enchantItem.getEnchantLevel()))
+							chance = Config.ENCHANT_CHANCE_LIST_ARMOR.get(enchantItem.getEnchantLevel());
+						else
+							chance = Config.ENCHANT_CHANCE_ARMOR;
+					}
+				}
+			}
 			return chance;
 		}
 	}

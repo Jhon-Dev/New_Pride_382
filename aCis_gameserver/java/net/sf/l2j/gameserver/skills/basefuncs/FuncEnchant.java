@@ -47,7 +47,11 @@ public class FuncEnchant extends Func
 					break;
 				
 				case A:
+					env.addValue(3 * enchant + 6 * overenchant);
+					break;
 				case B:
+					env.addValue(3 * enchant + 6 * overenchant);
+					break;
 				case C:
 					env.addValue(3 * enchant + 6 * overenchant);
 					break;
@@ -71,16 +75,13 @@ public class FuncEnchant extends Func
 						case BOW:
 							env.addValue(10 * enchant + 20 * overenchant);
 							break;
-						
-						case BIGBLUNT:
-						case BIGSWORD:
 						case DUALFIST:
 						case DUAL:
-							env.addValue(6 * enchant + 12 * overenchant);
+							env.addValue(4 * enchant + 12 * overenchant);
 							break;
 						
 						default:
-							env.addValue(5 * enchant + 10 * overenchant);
+							env.addValue(4 * enchant + 10 * overenchant);
 							break;
 					}
 					break;
@@ -91,14 +92,10 @@ public class FuncEnchant extends Func
 						case BOW:
 							env.addValue(8 * enchant + 16 * overenchant);
 							break;
-						
-						case BIGBLUNT:
-						case BIGSWORD:
 						case DUALFIST:
 						case DUAL:
 							env.addValue(5 * enchant + 10 * overenchant);
 							break;
-						
 						default:
 							env.addValue(4 * enchant + 8 * overenchant);
 							break;
@@ -111,9 +108,6 @@ public class FuncEnchant extends Func
 						case BOW:
 							env.addValue(6 * enchant + 12 * overenchant);
 							break;
-						
-						case BIGBLUNT:
-						case BIGSWORD:
 						case DUALFIST:
 						case DUAL:
 							env.addValue(4 * enchant + 8 * overenchant);
@@ -131,9 +125,6 @@ public class FuncEnchant extends Func
 						case BOW:
 							env.addValue(6 * enchant + 12 * overenchant);
 							break;
-						
-						case BIGBLUNT:
-						case BIGSWORD:
 						case DUALFIST:
 						case DUAL:
 							env.addValue(4 * enchant + 8 * overenchant);
@@ -144,8 +135,8 @@ public class FuncEnchant extends Func
 							break;
 					}
 					break;
-				
 				case D:
+				case NONE:
 					switch (type)
 					{
 						case BOW:

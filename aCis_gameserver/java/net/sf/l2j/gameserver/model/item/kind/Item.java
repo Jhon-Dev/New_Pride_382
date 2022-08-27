@@ -42,47 +42,67 @@ public abstract class Item
 	public static final int TYPE1_WEAPON_RING_EARRING_NECKLACE = 0;
 	public static final int TYPE1_SHIELD_ARMOR = 1;
 	public static final int TYPE1_ITEM_QUESTITEM_ADENA = 4;
-	
 	public static final int TYPE2_WEAPON = 0;
 	public static final int TYPE2_SHIELD_ARMOR = 1;
 	public static final int TYPE2_ACCESSORY = 2;
 	public static final int TYPE2_QUEST = 3;
 	public static final int TYPE2_MONEY = 4;
 	public static final int TYPE2_OTHER = 5;
-	
-	public static final int SLOT_NONE = 0x0000;
-	public static final int SLOT_UNDERWEAR = 0x0001;
-	public static final int SLOT_R_EAR = 0x0002;
-	public static final int SLOT_L_EAR = 0x0004;
-	public static final int SLOT_LR_EAR = 0x00006;
-	public static final int SLOT_NECK = 0x0008;
-	public static final int SLOT_R_FINGER = 0x0010;
-	public static final int SLOT_L_FINGER = 0x0020;
-	public static final int SLOT_LR_FINGER = 0x0030;
-	public static final int SLOT_HEAD = 0x0040;
-	public static final int SLOT_R_HAND = 0x0080;
-	public static final int SLOT_L_HAND = 0x0100;
-	public static final int SLOT_GLOVES = 0x0200;
-	public static final int SLOT_CHEST = 0x0400;
-	public static final int SLOT_LEGS = 0x0800;
-	public static final int SLOT_FEET = 0x1000;
-	public static final int SLOT_BACK = 0x2000;
-	public static final int SLOT_LR_HAND = 0x4000;
-	public static final int SLOT_FULL_ARMOR = 0x8000;
-	public static final int SLOT_FACE = 0x010000;
-	public static final int SLOT_ALLDRESS = 0x020000;
-	public static final int SLOT_HAIR = 0x040000;
-	public static final int SLOT_HAIRALL = 0x080000;
-	
+	public static final int SLOT_NONE = 0;
+	public static final int SLOT_UNDERWEAR = 1;
+	public static final int SLOT_R_EAR = 2;
+	public static final int SLOT_L_EAR = 4;
+	public static final int SLOT_LR_EAR = 6;
+	public static final int SLOT_NECK = 8;
+	public static final int SLOT_R_FINGER = 16;
+	public static final int SLOT_L_FINGER = 32;
+	public static final int SLOT_LR_FINGER = 48;
+	public static final int SLOT_HEAD = 64;
+	public static final int SLOT_R_HAND = 128;
+	public static final int SLOT_L_HAND = 256;
+	public static final int SLOT_GLOVES = 512;
+	public static final int SLOT_CHEST = 1024;
+	public static final int SLOT_LEGS = 2048;
+	public static final int SLOT_FEET = 4096;
+	public static final int SLOT_BACK = 8192;
+	public static final int SLOT_LR_HAND = 16384;
+	public static final int SLOT_FULL_ARMOR = 32768;
+	public static final int SLOT_FACE = 65536;
+	public static final int SLOT_ALLDRESS = 131072;
+	public static final int SLOT_HAIR = 262144;
+	public static final int SLOT_HAIRALL = 524288;
 	public static final int SLOT_WOLF = -100;
 	public static final int SLOT_HATCHLING = -101;
 	public static final int SLOT_STRIDER = -102;
 	public static final int SLOT_BABYPET = -103;
-	
-	public static final int SLOT_ALLWEAPON = SLOT_LR_HAND | SLOT_R_HAND;
-	
+	public static final int SLOT_ALLWEAPON = 16512;
+	public static final int MATERIAL_STEEL = 0;
+	public static final int MATERIAL_FINE_STEEL = 1;
+	public static final int MATERIAL_BLOOD_STEEL = 2;
+	public static final int MATERIAL_BRONZE = 3;
+	public static final int MATERIAL_SILVER = 4;
+	public static final int MATERIAL_GOLD = 5;
+	public static final int MATERIAL_MITHRIL = 6;
+	public static final int MATERIAL_ORIHARUKON = 7;
+	public static final int MATERIAL_PAPER = 8;
+	public static final int MATERIAL_WOOD = 9;
+	public static final int MATERIAL_CLOTH = 10;
+	public static final int MATERIAL_LEATHER = 11;
+	public static final int MATERIAL_BONE = 12;
+	public static final int MATERIAL_HORN = 13;
+	public static final int MATERIAL_DAMASCUS = 14;
+	public static final int MATERIAL_ADAMANTAITE = 15;
+	public static final int MATERIAL_CHRYSOLITE = 16;
+	public static final int MATERIAL_CRYSTAL = 17;
+	public static final int MATERIAL_LIQUID = 18;
+	public static final int MATERIAL_SCALE_OF_DRAGON = 19;
+	public static final int MATERIAL_DYESTUFF = 20;
+	public static final int MATERIAL_COBWEB = 21;
+	public static final int MATERIAL_SEED = 22;
+
 	private final int _itemId;
 	private final String _name;
+	private final String _icon;
 	protected int _type1; // needed for item list (inventory)
 	protected int _type2; // different lists for armor, weapon, etc
 	private final int _weight;
@@ -104,6 +124,17 @@ public abstract class Item
 	private final boolean _isOlyRestricted;
 	
 	private final ActionType _defaultAction;
+
+	private final boolean _is_item_list_1;
+	private final int _enchant_bonus_item_list_1;
+	private final boolean _is_item_list_2;
+	private final int _enchant_bonus_item_list_2;
+	private final boolean _is_item_list_3;
+	private final int _enchant_bonus_item_list_3;
+	private final boolean _is_item_list_4;
+	private final int _enchant_bonus_item_list_4;
+	private final boolean _is_item_list_5;
+	private final int _enchant_bonus_item_list_5;
 	
 	protected List<FuncTemplate> _funcTemplates;
 	
@@ -122,6 +153,7 @@ public abstract class Item
 	{
 		_itemId = set.getInteger("item_id");
 		_name = set.getString("name");
+		_icon = set.getString("icon", null);
 		_weight = set.getInteger("weight", 0);
 		_materialType = set.getEnum("material", MaterialType.class, MaterialType.STEEL);
 		_duration = set.getInteger("duration", -1);
@@ -141,6 +173,17 @@ public abstract class Item
 		_isOlyRestricted = set.getBool("is_oly_restricted", false);
 		
 		_defaultAction = set.getEnum("default_action", ActionType.class, ActionType.none);
+
+		_is_item_list_1 = set.getBool("is_item_list_1", false);
+		_enchant_bonus_item_list_1 = set.getInteger("enchant_bonus_item_list_1", 0);
+		_is_item_list_2 = set.getBool("is_item_list_2", false);
+		_enchant_bonus_item_list_2 = set.getInteger("enchant_bonus_item_list_2", 0);
+		_is_item_list_3 = set.getBool("is_item_list_3", false);
+		_enchant_bonus_item_list_3 = set.getInteger("enchant_bonus_item_list_3", 0);
+		_is_item_list_4 = set.getBool("is_item_list_4", false);
+		_enchant_bonus_item_list_4 = set.getInteger("enchant_bonus_item_list_4", 0);
+		_is_item_list_5 = set.getBool("is_item_list_5", false);
+		_enchant_bonus_item_list_5 = set.getInteger("enchant_bonus_item_list_5", 0);
 		
 		String skills = set.getString("item_skill", null);
 		if (skills != null)
@@ -578,4 +621,58 @@ public abstract class Item
 	{
 		return _questEvents;
 	}
+	public boolean isCursedWeapon()
+	{
+		return _itemId == 8190 || _itemId == 8689;
+	}
+	public boolean isItemList1()
+	{
+		return _is_item_list_1;
+	}
+	public int enchantBonusItemList1()
+	{
+		return _enchant_bonus_item_list_1;
+	}
+	public boolean isItemList2()
+	{
+		return _is_item_list_2;
+	}
+	public int enchantBonusItemList2()
+	{
+		return _enchant_bonus_item_list_2;
+	}
+	public boolean isItemList3()
+	{
+		return _is_item_list_3;
+	}
+	public int enchantBonusItemList3()
+	{
+		return _enchant_bonus_item_list_3;
+	}
+	public boolean isItemList4()
+	{
+		return _is_item_list_4;
+	}
+	public int enchantBonusItemList4()
+	{
+		return _enchant_bonus_item_list_4;
+	}
+	public boolean isItemList5()
+	{
+		return _is_item_list_5;
+	}
+	public int enchantBonusItemList5()
+	{
+		return _enchant_bonus_item_list_5;
+	}
+
+	/**
+	 * Get the icon link in client files.<BR> Usable in HTML windows.
+	 * @return the _icon
+	 */
+	public String getIcon()
+	{
+		return _icon;
+	}
+
 }

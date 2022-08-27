@@ -50,6 +50,9 @@ public abstract class Summon extends Playable
 	private boolean _previousFollowStatus = true;
 	
 	private int _shotsMask = 0;
+
+	private int _chargedSoulShot;
+	private int _chargedSpiritShot;
 	
 	public Summon(int objectId, NpcTemplate template, Player owner)
 	{
@@ -382,7 +385,27 @@ public abstract class Summon extends Playable
 	{
 		return _owner.isAutoAttackable(attacker);
 	}
-	
+
+	public int getChargedSoulShot()
+	{
+		return _chargedSoulShot;
+	}
+
+	public int getChargedSpiritShot()
+	{
+		return _chargedSpiritShot;
+	}
+
+	public void setChargedSpiritShot(int shotType)
+	{
+		_chargedSpiritShot = shotType;
+	}
+
+	public void setChargedSoulShot(int shotType)
+	{
+		_chargedSoulShot = shotType;
+	}
+
 	public int getControlItemId()
 	{
 		return 0;
