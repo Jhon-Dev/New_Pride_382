@@ -18,7 +18,6 @@ import net.sf.l2j.commons.math.MathUtil;
 
 import net.sf.l2j.gameserver.model.holder.IntIntHolder;
 
-import javolution.util.FastMap;
 
 /**
  * This class contains global server configuration.<br>
@@ -863,7 +862,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceWeapon", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_WEAPON = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_WEAPON = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListWeapon", "").split(";");
 			for (String enchant : propertySplit)
@@ -888,7 +887,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceArmor", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_ARMOR = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_ARMOR = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListArmor", "").split(";");
 			for (String enchant : propertySplit)
@@ -913,7 +912,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceJewelry", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListJewelry", "").split(";");
 			for (String enchant : propertySplit)
@@ -939,7 +938,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceWeapon", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListWeapon", "").split(";");
 			for (String enchant : propertySplit)
@@ -964,7 +963,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceArmor", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListArmor", "").split(";");
 			for (String enchant : propertySplit)
@@ -989,7 +988,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceJewelry", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListJewelry", "").split(";");
 			for (String enchant : propertySplit)
@@ -1015,7 +1014,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceWeapon", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON)
 		{
-			ENCHANT_CHANCE_LIST_WEAPON = new FastMap<>();
+			ENCHANT_CHANCE_LIST_WEAPON = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListWeapon", "").split(";");
 			for (String enchant : propertySplit)
@@ -1040,7 +1039,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceArmor", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR)
 		{
-			ENCHANT_CHANCE_LIST_ARMOR = new FastMap<>();
+			ENCHANT_CHANCE_LIST_ARMOR = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListArmor", "").split(";");
 			for (String enchant : propertySplit)
@@ -1065,7 +1064,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceJewelry", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY)
 		{
-			ENCHANT_CHANCE_LIST_JEWELRY = new FastMap<>();
+			ENCHANT_CHANCE_LIST_JEWELRY = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListJewelry", "").split(";");
 			for (String enchant : propertySplit)
@@ -1091,7 +1090,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceWeapon1", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_1)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_1 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListWeapon1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1116,7 +1115,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceArmor1", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_1)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_1 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListArmor1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1141,7 +1140,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceJewelry1", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_1)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_1 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListJewelry1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1167,7 +1166,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceWeapon1", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_1)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_1 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListWeapon1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1192,7 +1191,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceArmor1", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_1)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_1 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListArmor1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1217,7 +1216,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceJewelry1", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_1)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_1 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListJewelry1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1243,7 +1242,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceWeapon1", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_1)
 		{
-			ENCHANT_CHANCE_LIST_WEAPON_1 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_WEAPON_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListWeapon1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1268,7 +1267,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceArmor1", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_1)
 		{
-			ENCHANT_CHANCE_LIST_ARMOR_1 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_ARMOR_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListArmor1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1293,7 +1292,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_1 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceJewelry1", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_1)
 		{
-			ENCHANT_CHANCE_LIST_JEWELRY_1 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_JEWELRY_1 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListJewelry1", "").split(";");
 			for (String enchant : propertySplit)
@@ -1319,7 +1318,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceWeapon2", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_2)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_2 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListWeapon2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1344,7 +1343,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceArmor2", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_2)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_2 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListArmor2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1369,7 +1368,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceJewelry2", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_2)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_2 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListJewelry2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1395,7 +1394,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceWeapon2", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_2)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_2 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListWeapon2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1420,7 +1419,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceArmor2", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_2)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_2 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListArmor2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1445,7 +1444,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceJewelry2", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_2)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_2 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListJewelry2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1471,7 +1470,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceWeapon2", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_2)
 		{
-			ENCHANT_CHANCE_LIST_WEAPON_2 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_WEAPON_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListWeapon2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1496,7 +1495,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceArmor2", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_2)
 		{
-			ENCHANT_CHANCE_LIST_ARMOR_2 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_ARMOR_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListArmor2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1521,7 +1520,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_2 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceJewelry2", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_2)
 		{
-			ENCHANT_CHANCE_LIST_JEWELRY_2 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_JEWELRY_2 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListJewelry2", "").split(";");
 			for (String enchant : propertySplit)
@@ -1547,7 +1546,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceWeapon3", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_3)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_3 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListWeapon3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1572,7 +1571,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceArmor3", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_3)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_3 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListArmor3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1597,7 +1596,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceJewelry3", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_3)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_3 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListJewelry3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1623,7 +1622,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceWeapon3", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_3)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_3 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListWeapon3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1648,7 +1647,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceArmor3", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_3)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_3 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListArmor3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1673,7 +1672,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceJewelry3", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_3)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_3 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListJewelry3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1699,7 +1698,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceWeapon3", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_3)
 		{
-			ENCHANT_CHANCE_LIST_WEAPON_3 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_WEAPON_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListWeapon3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1724,7 +1723,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceArmor3", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_3)
 		{
-			ENCHANT_CHANCE_LIST_ARMOR_3 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_ARMOR_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListArmor3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1749,7 +1748,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_3 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceJewelry3", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_3)
 		{
-			ENCHANT_CHANCE_LIST_JEWELRY_3 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_JEWELRY_3 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListJewelry3", "").split(";");
 			for (String enchant : propertySplit)
@@ -1775,7 +1774,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceWeapon4", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_4)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_4 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListWeapon4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1800,7 +1799,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceArmor4", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_4)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_4 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListArmor4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1825,7 +1824,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceJewelry4", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_4)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_4 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListJewelry4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1851,7 +1850,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceWeapon4", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_4)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_4 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListWeapon4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1876,7 +1875,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceArmor4", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_4)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_4 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListArmor4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1901,7 +1900,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceJewelry4", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_4)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_4 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListJewelry4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1927,7 +1926,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceWeapon4", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_4)
 		{
-			ENCHANT_CHANCE_LIST_WEAPON_4 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_WEAPON_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListWeapon4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1952,7 +1951,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceArmor4", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_4)
 		{
-			ENCHANT_CHANCE_LIST_ARMOR_4 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_ARMOR_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListArmor4", "").split(";");
 			for (String enchant : propertySplit)
@@ -1977,7 +1976,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_4 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceJewelry4", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_4)
 		{
-			ENCHANT_CHANCE_LIST_JEWELRY_4 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_JEWELRY_4 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListJewelry4", "").split(";");
 			for (String enchant : propertySplit)
@@ -2003,7 +2002,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceWeapon5", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_WEAPON_5)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_5 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_WEAPON_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListWeapon5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2028,7 +2027,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceArmor5", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_ARMOR_5)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_5 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_ARMOR_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListArmor5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2053,7 +2052,7 @@ public final class Config
 		ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyBlessedEnchantChanceJewelry5", "False"));
 		if (ENABLE_MODIFY_BLESSED_ENCHANT_CHANCE_JEWELRY_5)
 		{
-			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_5 = new FastMap<>();
+			BLESSED_ENCHANT_CHANCE_LIST_JEWELRY_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("BlessedEnchantChanceListJewelry5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2079,7 +2078,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceWeapon5", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_WEAPON_5)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_5 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_WEAPON_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListWeapon5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2104,7 +2103,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceArmor5", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_ARMOR_5)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_5 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_ARMOR_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListArmor5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2129,7 +2128,7 @@ public final class Config
 		ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyCrystalEnchantChanceJewelry5", "False"));
 		if (ENABLE_MODIFY_CRYSTAL_ENCHANT_CHANCE_JEWELRY_5)
 		{
-			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_5 = new FastMap<>();
+			CRYSTAL_ENCHANT_CHANCE_LIST_JEWELRY_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("CrystalEnchantChanceListJewelry5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2155,7 +2154,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceWeapon5", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_WEAPON_5)
 		{
-			ENCHANT_CHANCE_LIST_WEAPON_5 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_WEAPON_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListWeapon5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2180,7 +2179,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceArmor5", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_ARMOR_5)
 		{
-			ENCHANT_CHANCE_LIST_ARMOR_5 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_ARMOR_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListArmor5", "").split(";");
 			for (String enchant : propertySplit)
@@ -2205,7 +2204,7 @@ public final class Config
 		ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_5 = Boolean.parseBoolean(Enchant.getProperty("EnableModifyEnchantChanceJewelry5", "False"));
 		if (ENABLE_MODIFY_ENCHANT_CHANCE_JEWELRY_5)
 		{
-			ENCHANT_CHANCE_LIST_JEWELRY_5 = new FastMap<>();
+			ENCHANT_CHANCE_LIST_JEWELRY_5 = new HashMap<>();
 			String[] propertySplit;
 			propertySplit = Enchant.getProperty("EnchantChanceListJewelry5", "").split(";");
 			for (String enchant : propertySplit)
