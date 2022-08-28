@@ -1,0 +1,38 @@
+<html><body>Feline Queen<br>
+	Hello, I can help you but I have a price for each effect.<br>
+	<font color="LEVEL">Depending of your Divine Inspiration level, maxBuffs can be changed.</font><br>
+	<center>
+		<table width=100>
+			<tr>
+				<td><button value="Restore" action="bypass -h Quest MagicSupport restoreCpHpMp" width=95 height=22 back="L2UI_CH3.bigbutton_down" fore="L2UI_CH3.bigbutton"></td>
+				<td><button value="Cancel" action="bypass -h Quest MagicSupport cancelEffects" width=95 height=22 back="L2UI_CH3.bigbutton_down" fore="L2UI_CH3.bigbutton"></td>
+			</tr>
+		</table>
+		<br>
+		<table width=100>
+			<tr>
+				<td>
+					<button value="Basics" action="bypass Quest MagicSupport 50000-01.htm" width=95 height=22 back="L2UI_CH3.bigbutton_down" fore="L2UI_CH3.bigbutton">
+					<button value="Chants" action="bypass Quest MagicSupport 50000-03.htm" width=95 height=22 back="L2UI_CH3.bigbutton_down" fore="L2UI_CH3.bigbutton">
+					<button value="Dances" action="bypass Quest MagicSupport 50000-04.htm" width=95 height=22 back="L2UI_CH3.bigbutton_down" fore="L2UI_CH3.bigbutton">
+					<button value="Songs" action="bypass Quest MagicSupport 50000-05.htm" width=95 height=22 back="L2UI_CH3.bigbutton_down" fore="L2UI_CH3.bigbutton">
+				</td>
+			</tr>
+		</table>
+		<br>
+		<table width=200>
+			<tr>
+				<td><combobox width=120 height=21 var="cb" list=select;warrior_w_zerk;warrior_w/o_zerk;mage_w_zerk;mage_w/o_zerk;></td>
+				<td><button value="Buff Me!" action="bypass -h Quest MagicSupport $cb" width=75 height=21 back="L2UI_ch3.Btn1_normalOn" fore="L2UI_ch3.Btn1_normal"></td>
+			</tr>
+		</table>
+		<table width=180>
+			<tr>
+				<td>
+					<font color="LEVEL">w_zerk</font> = with berserker spirit<br1>
+					<font color="LEVEL">w/o_zerk</font> = without berserker spirit
+				</td>
+			</tr>
+		</table>
+	</center>
+</body></html>

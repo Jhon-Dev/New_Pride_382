@@ -394,6 +394,7 @@
 	<script path="scripts.custom.NpcLocationInfo"/>
 	<script path="scripts.custom.HeroCirclet"/>
 	<script path="scripts.custom.HeroWeapon"/>
+	<script path="scripts.custom.MagicSupport"/>
 
 	<!-- Events -->
 
