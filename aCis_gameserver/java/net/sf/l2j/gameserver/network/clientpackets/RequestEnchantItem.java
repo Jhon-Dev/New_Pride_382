@@ -1,24 +1,16 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.commons.random.Rnd;
-
 import net.sf.l2j.gameserver.data.SkillTable;
-import net.sf.l2j.gameserver.data.xml.ArmorSetData;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.World;
 import net.sf.l2j.gameserver.model.actor.Player;
-import net.sf.l2j.gameserver.model.item.ArmorSet;
 import net.sf.l2j.gameserver.model.item.instance.ItemInstance;
-import net.sf.l2j.gameserver.model.item.kind.Armor;
-import net.sf.l2j.gameserver.model.item.kind.Item;
-import net.sf.l2j.gameserver.model.item.kind.Weapon;
-import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.EnchantResult;
-import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.ItemList;
-import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.network.serverpackets.*;
+
+import java.util.Collection;
 
 public final class RequestEnchantItem extends AbstractEnchantPacket
 {
@@ -81,6 +73,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 		if (scroll == null)
 		{
 			activeChar.sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
+			//Util.handleIllegalPlayerAction(activeChar, activeChar.getName() + " tried to enchant without scroll.", Config.DEFAULT_PUNISH);
 			activeChar.setActiveEnchantItem(null);
 			activeChar.sendPacket(EnchantResult.CANCELLED);
 			return;
@@ -107,7 +100,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 			}
 			
 			// success
-			if (Rnd.nextDouble() < chance)
+			if (Rnd.get(100) < chance)
 			{
 				// announce the success
 				SystemMessage sm;
@@ -125,146 +118,167 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 					sm.addItemName(item.getItemId());
 					activeChar.sendPacket(sm);
 				}
-				
-				item.setEnchantLevel(item.getEnchantLevel() + 1);
-				item.updateDatabase();
-				
-				// If item is equipped, verify the skill obtention (+4 duals, +6 armorset).
-				if (item.isEquipped())
+
+				// announce the success
+				if ((item.isItemList1() && item.getEnchantLevel() >= 18) || (item.isItemList2() && item.getEnchantLevel() >= 15) || (item.isItemList3() && item.getEnchantLevel() >= 12))
 				{
-					final Item it = item.getItem();
-					
-					// Add skill bestowed by +4 duals.
-					if (it instanceof Weapon && item.getEnchantLevel() == 4)
+					final Collection<Player> pls = World.getInstance().getPlayers();
+					for (Player onlinePlayer : pls)
 					{
-						final L2Skill enchant4Skill = ((Weapon) it).getEnchant4Skill();
-						if (enchant4Skill != null)
-						{
-							activeChar.addSkill(enchant4Skill, false);
-							activeChar.sendSkillList();
-						}
-					}
-					// Add skill bestowed by +6 armorset.
-					else if (it instanceof Armor && item.getEnchantLevel() == 6)
-					{
-						// Checks if player is wearing a chest item
-						final ItemInstance chestItem = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST);
-						if (chestItem != null)
-						{
-							final ArmorSet armorSet = ArmorSetData.getInstance().getSet(chestItem.getItemId());
-							if (armorSet != null && armorSet.isEnchanted6(activeChar)) // has all parts of set enchanted to 6 or more
-							{
-								final int skillId = armorSet.getEnchant6skillId();
-								if (skillId > 0)
-								{
-									final L2Skill skill = SkillTable.getInstance().getInfo(skillId, 1);
-									if (skill != null)
-									{
-										activeChar.addSkill(skill, false);
-										activeChar.sendSkillList();
-									}
-								}
-							}
-						}
+						if (onlinePlayer == null)
+							continue;
+
+						onlinePlayer.sendPacket(SystemMessage.sendString(activeChar.getName() + " has successfuly enchanted a +" + item.getEnchantLevel() + " " + item.getName() + " with " + scroll.getName() + "."));
+						L2Skill skill = SkillTable.FrequentSkill.LARGE_FIREWORK.getSkill();
+						activeChar.broadcastPacket(new MagicSkillUse(activeChar, skill.getId(), skill.getLevel(), skill.getHitTime(), skill.getReuseDelay()));
+						activeChar.broadcastPacket(new SocialAction(activeChar, 3));
 					}
 				}
+
+				item.setEnchantLevel(item.getEnchantLevel() + 1);
+				item.updateDatabase();
 				activeChar.sendPacket(EnchantResult.SUCCESS);
 			}
 			else
 			{
-				// Drop passive skills from items.
+				// unequip item on enchant failure to avoid item skills stack
 				if (item.isEquipped())
 				{
-					final Item it = item.getItem();
-					
-					// Remove skill bestowed by +4 duals.
-					if (it instanceof Weapon && item.getEnchantLevel() >= 4)
+					if (item.getEnchantLevel() > 0)
 					{
-						final L2Skill enchant4Skill = ((Weapon) it).getEnchant4Skill();
-						if (enchant4Skill != null)
-						{
-							activeChar.removeSkill(enchant4Skill.getId(), false);
-							activeChar.sendSkillList();
-						}
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+						sm.addNumber(item.getEnchantLevel());
+						sm.addItemName(item.getItemId());
+						activeChar.sendPacket(sm);
 					}
-					// Add skill bestowed by +6 armorset.
-					else if (it instanceof Armor && item.getEnchantLevel() >= 6)
+					else
 					{
-						// Checks if player is wearing a chest item
-						final ItemInstance chestItem = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST);
-						if (chestItem != null)
-						{
-							final ArmorSet armorSet = ArmorSetData.getInstance().getSet(chestItem.getItemId());
-							if (armorSet != null && armorSet.isEnchanted6(activeChar)) // has all parts of set enchanted to 6 or more
-							{
-								final int skillId = armorSet.getEnchant6skillId();
-								if (skillId > 0)
-								{
-									activeChar.removeSkill(skillId, false);
-									activeChar.sendSkillList();
-								}
-							}
-						}
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
+						sm.addItemName(item.getItemId());
+						activeChar.sendPacket(sm);
+					}
+
+					ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
+					InventoryUpdate iu = new InventoryUpdate();
+					for (ItemInstance itm : unequiped)
+						iu.addModifiedItem(itm);
+
+					activeChar.sendPacket(iu);
+					activeChar.broadcastUserInfo();
+				}
+
+				// announce the fail
+				if ((item.isItemList1() && item.getEnchantLevel() > 18) || (item.isItemList2() && item.getEnchantLevel() > 15) || (item.isItemList3() && item.getEnchantLevel() > 12))
+				{
+					final Collection<Player> pls = World.getInstance().getPlayers();
+					for (Player onlinePlayer : pls)
+					{
+						if (onlinePlayer == null)
+							continue;
+
+						onlinePlayer.sendPacket(SystemMessage.sendString(activeChar.getName() + " has failed enchanted a +" + item.getEnchantLevel() + " " + item.getName() + " with " + scroll.getName() + "."));
+						activeChar.broadcastPacket(new SocialAction(activeChar, 13));
 					}
 				}
 				
 				if (scrollTemplate.isBlessed())
 				{
 					// blessed enchant - clear enchant value
-					activeChar.sendPacket(SystemMessageId.BLESSED_ENCHANT_FAILED);
-					
-					item.setEnchantLevel(0);
+					// activeChar.sendPacket(SystemMessageId.BLESSED_ENCHANT_FAILED);
+
+					if (item.getEnchantLevel() > Config.ENCHANT_SAFE_MAX)
+					{
+						activeChar.sendMessage("Failed in Blessed Enchant. The enchant value of the item reduced 1.");
+						item.setEnchantLevel(item.getEnchantLevel() - 1);
+					}
+					else if (item.getEnchantLevel() == Config.ENCHANT_SAFE_MAX)
+					{
+						activeChar.sendMessage("Failed in Blessed Enchant. The enchant value of the item became " + Config.ENCHANT_SAFE_MAX + ".");
+						item.setEnchantLevel(Config.ENCHANT_SAFE_MAX);
+					}
+
+					item.updateDatabase();
+					activeChar.sendPacket(EnchantResult.UNSUCCESS);
+				}
+				else if (scrollTemplate.isCrystal())
+				{
+					// crystal enchant - clear enchant value
+					activeChar.sendMessage("Failed in Crystal Enchant. The enchant value of the item became " + Config.ENCHANT_SAFE_MAX + ".");;
+
+					item.setEnchantLevel(Config.ENCHANT_SAFE_MAX);
 					item.updateDatabase();
 					activeChar.sendPacket(EnchantResult.UNSUCCESS);
 				}
 				else
 				{
-					// enchant failed, destroy item
-					int crystalId = item.getItem().getCrystalItemId();
-					int count = item.getCrystalCount() - (item.getItem().getCrystalCount() + 1) / 2;
-					if (count < 1)
-						count = 1;
-					
-					ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
-					if (destroyItem == null)
+					if (!item.isItemList1() && !item.isItemList2() && !item.isItemList3())
 					{
-						activeChar.setActiveEnchantItem(null);
-						activeChar.sendPacket(EnchantResult.CANCELLED);
-						return;
+						// enchant - clear enchant value
+						activeChar.sendMessage("Failed in Enchant. The enchant value of the item became " + Config.ENCHANT_SAFE_MAX + ".");
+
+						item.setEnchantLevel(Config.ENCHANT_SAFE_MAX);
+						item.updateDatabase();
+						activeChar.sendPacket(EnchantResult.UNSUCCESS);
 					}
-					
-					if (crystalId != 0)
+					else
 					{
-						activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S).addItemName(crystalId).addItemNumber(count));
+						// enchant failed, destroy item
+						int crystalId = item.getItem().getCrystalItemId();
+						int count = item.getCrystalCount() - (item.getItem().getCrystalCount() + 1) / 2;
+						if (count < 1)
+							count = 1;
+
+						ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
+						if (destroyItem == null)
+						{
+							// unable to destroy item, cheater ?
+							//Util.handleIllegalPlayerAction(activeChar, "Unable to delete item on enchant failure from player " + activeChar.getName() + ", possible cheater !", Config.DEFAULT_PUNISH);
+							activeChar.setActiveEnchantItem(null);
+							activeChar.sendPacket(EnchantResult.CANCELLED);
+							return;
+						}
+
+						ItemInstance crystals = null;
+						if (crystalId != 0)
+						{
+							crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
+
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
+							sm.addItemName(crystals.getItemId());
+							sm.addItemNumber(count);
+							activeChar.sendPacket(sm);
+						}
+
+						if (!Config.FORCE_INVENTORY_UPDATE)
+						{
+							InventoryUpdate iu = new InventoryUpdate();
+							if (destroyItem.getCount() == 0)
+								iu.addRemovedItem(destroyItem);
+							else
+								iu.addModifiedItem(destroyItem);
+
+							if (crystals != null)
+								iu.addItem(crystals);
+
+							activeChar.sendPacket(iu);
+						}
+						else
+							activeChar.sendPacket(new ItemList(activeChar, true));
+
+						World world = World.getInstance();
+						world.removeObject(destroyItem);
+						if (crystalId == 0)
+							activeChar.sendPacket(EnchantResult.UNK_RESULT_4);
+						else
+							activeChar.sendPacket(EnchantResult.UNK_RESULT_1);
 					}
-					
-					InventoryUpdate iu = new InventoryUpdate();
-					if (destroyItem.getCount() == 0)
-						iu.addRemovedItem(destroyItem);
-					else
-						iu.addModifiedItem(destroyItem);
-					
-					activeChar.sendPacket(iu);
-					
-					// Messages.
-					if (item.getEnchantLevel() > 0)
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENCHANTMENT_FAILED_S1_S2_EVAPORATED).addNumber(item.getEnchantLevel()).addItemName(item.getItemId()));
-					else
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENCHANTMENT_FAILED_S1_EVAPORATED).addItemName(item.getItemId()));
-					
-					World.getInstance().removeObject(destroyItem);
-					if (crystalId == 0)
-						activeChar.sendPacket(EnchantResult.UNK_RESULT_4);
-					else
-						activeChar.sendPacket(EnchantResult.UNK_RESULT_1);
-					
-					StatusUpdate su = new StatusUpdate(activeChar);
-					su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
-					activeChar.sendPacket(su);
 				}
 			}
-			
+
+			StatusUpdate su = new StatusUpdate(activeChar);
+			su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
+			activeChar.sendPacket(su);
+
 			activeChar.sendPacket(new ItemList(activeChar, false));
 			activeChar.broadcastUserInfo();
 			activeChar.setActiveEnchantItem(null);
